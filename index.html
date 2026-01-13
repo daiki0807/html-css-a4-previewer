@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="HTMLとCSSをリアルタイムでプレビューし、A4サイズのPDFとしてダウンロードできるWebアプリ">
+    <title>HTML/CSS A4 プレビューアー</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- ヘッダー -->
+        <header class="header">
+            <h1 class="header-title">
+                <span class="header-icon">📄</span>
+                HTML/CSS A4 プレビューアー
+            </h1>
+            <p class="header-subtitle">リアルタイムプレビュー＆PDF出力</p>
+        </header>
+
+        <main class="main-content">
+            <!-- 左側: エディタパネル -->
+            <section class="editor-panel">
+                <div class="editor-section">
+                    <div class="editor-header">
+                        <span class="editor-label">
+                            <span class="label-icon">🏷️</span>
+                            HTML
+                        </span>
+                    </div>
+                    <textarea id="html-editor" class="code-editor" placeholder="HTMLコードを入力..." spellcheck="false"><h1>Hello World!</h1>
+<p>HTMLとCSSを編集して、リアルタイムでプレビューを確認できます。</p>
+<div class="card">
+  <h2>カード見出し</h2>
+  <p>これはカードコンポーネントのサンプルです。</p>
+  <button>ボタン</button>
+</div></textarea>
+                </div>
+
+                <div class="editor-section">
+                    <div class="editor-header">
+                        <span class="editor-label">
+                            <span class="label-icon">🎨</span>
+                            CSS
+                        </span>
+                    </div>
+                    <textarea id="css-editor" class="code-editor" placeholder="CSSコードを入力..." spellcheck="false">body {
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100%;
+  margin: 0;
+  color: #333;
+}
+
+h1 {
+  color: #fff;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+p {
+  color: #f0f0f0;
+  line-height: 1.6;
+}
+
+.card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  margin-top: 20px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+}
+
+.card h2 {
+  color: #764ba2;
+  margin-top: 0;
+}
+
+.card p {
+  color: #666;
+}
+
+button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}</textarea>
+                </div>
+            </section>
+
+            <!-- 右側: プレビューパネル -->
+            <section class="preview-panel">
+                <div class="preview-header">
+                    <span class="preview-label">
+                        <span class="label-icon">👁️</span>
+                        プレビュー (A4)
+                    </span>
+                    <button id="download-pdf-btn" class="download-btn">
+                        <span class="btn-icon">📥</span>
+                        PDFとしてダウンロード
+                    </button>
+                </div>
+                <div class="preview-wrapper">
+                    <div class="a4-frame" id="a4-frame">
+                        <iframe id="preview-iframe" class="preview-iframe" sandbox="allow-same-origin"></iframe>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
