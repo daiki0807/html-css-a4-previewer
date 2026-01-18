@@ -15,23 +15,23 @@
   --text-muted: #71717a;
   --border-color: rgba(255, 255, 255, 0.1);
   --shadow-glow: 0 0 20px rgba(102, 126, 234, 0.3);
-  
+
   /* Typography */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'Fira Code', 'Monaco', 'Consolas', monospace;
-  
+
   /* Spacing */
   --spacing-xs: 4px;
   --spacing-sm: 8px;
   --spacing-md: 16px;
   --spacing-lg: 24px;
   --spacing-xl: 32px;
-  
+
   /* Border Radius */
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
-  
+
   /* Transitions */
   --transition-fast: 0.15s ease;
   --transition-normal: 0.25s ease;
@@ -43,7 +43,8 @@
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   height: 100%;
   font-family: var(--font-sans);
   background: var(--bg-dark);
@@ -264,14 +265,14 @@ html, body {
   overflow: auto;
 }
 
-/* A4 Frame - keeps aspect ratio of 210:297 */
-.a4-frame {
+/* Preview Frame - 16:9 Aspect Ratio */
+.preview-frame {
   width: 100%;
-  max-width: 420px;
-  aspect-ratio: 210 / 297;
+  max-width: 800px;
+  aspect-ratio: 16 / 9;
   background: #fff;
   border-radius: var(--radius-sm);
-  box-shadow: 
+  box-shadow:
     0 4px 20px rgba(0, 0, 0, 0.3),
     0 0 0 1px rgba(255, 255, 255, 0.1);
   overflow: hidden;
@@ -292,13 +293,13 @@ html, body {
   .main-content {
     flex-direction: column;
   }
-  
+
   .editor-panel {
     flex-direction: row;
   }
-  
-  .a4-frame {
-    max-width: 300px;
+
+  .preview-frame {
+    max-width: 100%;
   }
 }
 
@@ -306,26 +307,26 @@ html, body {
   .header {
     padding: var(--spacing-sm) var(--spacing-md);
   }
-  
+
   .header-title {
     font-size: 1.2rem;
   }
-  
+
   .editor-panel {
     flex-direction: column;
   }
-  
+
   .preview-header {
     flex-direction: column;
     gap: var(--spacing-sm);
   }
-  
+
   .download-btn {
     width: 100%;
     justify-content: center;
   }
-  
-  .a4-frame {
+
+  .preview-frame {
     max-width: 100%;
   }
 }

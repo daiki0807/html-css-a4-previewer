@@ -10,7 +10,7 @@ const htmlEditor = document.getElementById('html-editor');
 const cssEditor = document.getElementById('css-editor');
 const previewIframe = document.getElementById('preview-iframe');
 const downloadPdfBtn = document.getElementById('download-pdf-btn');
-const a4Frame = document.getElementById('a4-frame');
+const previewFrame = document.getElementById('preview-frame');
 
 // =============================================
 // Debounce Utility
@@ -33,7 +33,7 @@ function debounce(func, wait) {
 function updatePreview() {
   const htmlContent = htmlEditor.value;
   const cssContent = cssEditor.value;
-  
+
   // iframeのsrcdocに完全なHTMLドキュメントを設定
   const fullDocument = `
 <!DOCTYPE html>
@@ -53,7 +53,7 @@ function updatePreview() {
 </body>
 </html>
   `.trim();
-  
+
   previewIframe.srcdoc = fullDocument;
 }
 
@@ -67,16 +67,16 @@ async function downloadPdf() {
   // ボタンを一時的に無効化
   downloadPdfBtn.disabled = true;
   downloadPdfBtn.textContent = '生成中...';
-  
+
   try {
     // プレビュー内容を取得
     const htmlContent = htmlEditor.value;
     const cssContent = cssEditor.value;
-    
+
     // PDF用の一時的なコンテナを作成
     const pdfContainer = document.createElement('div');
     pdfContainer.innerHTML = htmlContent;
-    
+
     // スタイルを適用
     const styleElement = document.createElement('style');
     styleElement.textContent = `
@@ -84,40 +84,40 @@ async function downloadPdf() {
       ${cssContent}
     `;
     pdfContainer.insertBefore(styleElement, pdfContainer.firstChild);
-    
+
     // 一時的にDOMに追加（html2pdfがレンダリングに必要）
     pdfContainer.style.position = 'absolute';
     pdfContainer.style.left = '-9999px';
     pdfContainer.style.top = '0';
-    pdfContainer.style.width = '210mm';  // A4幅
-    pdfContainer.style.minHeight = '297mm';  // A4高さ
+    pdfContainer.style.width = '420mm';  // A3横幅
+    pdfContainer.style.minHeight = '297mm';  // A3高さ
     pdfContainer.style.background = '#fff';
     document.body.appendChild(pdfContainer);
-    
+
     // html2pdf.jsのオプション（ユーザー指定の設定を使用）
     const pdfOptions = {
       margin: 10,
       filename: 'preview.pdf',
       image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { 
+      html2canvas: {
         scale: 2,
         useCORS: true,
         logging: false
       },
-      jsPDF: { 
-        unit: 'mm', 
-        format: 'a4', 
-        orientation: 'portrait' 
+      jsPDF: {
+        unit: 'mm',
+        format: 'a3',
+        orientation: 'landscape'
       },
       pagebreak: { mode: 'avoid-all' }
     };
-    
+
     // PDF生成とダウンロード
     await html2pdf().set(pdfOptions).from(pdfContainer).save();
-    
+
     // 一時コンテナを削除
     document.body.removeChild(pdfContainer);
-    
+
   } catch (error) {
     console.error('PDF生成エラー:', error);
     alert('PDFの生成中にエラーが発生しました。');
@@ -144,11 +144,11 @@ function handleTabKey(e) {
     const textarea = e.target;
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
-    
+
     // タブ文字の代わりにスペース2つを挿入
     textarea.value = textarea.value.substring(0, start) + '  ' + textarea.value.substring(end);
     textarea.selectionStart = textarea.selectionEnd = start + 2;
-    
+
     // プレビューを更新
     debouncedUpdatePreview();
   }
