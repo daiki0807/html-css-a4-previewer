@@ -112,12 +112,11 @@ async function downloadPdf() {
     `;
     pdfContainer.insertBefore(styleElement, pdfContainer.firstChild);
 
-    // コンテナのスタイル設定
+    // コンテナのスタイル設定（コンテンツサイズに合わせる）
     pdfContainer.style.cssText = `
-      width: 420mm;
-      min-height: 297mm;
+      display: inline-block;
       background: #fff;
-      overflow: visible;
+      padding: 10mm;
     `;
 
     overlay.appendChild(pdfContainer);
@@ -126,22 +125,33 @@ async function downloadPdf() {
     // DOMの描画を待機（html2canvasが正しくキャプチャできるように）
     await new Promise(resolve => setTimeout(resolve, 100));
 
-    // html2pdf.jsのオプション（ユーザー指定の設定を使用）
+    // コンテンツの実際のサイズを取得
+    const contentWidth = pdfContainer.offsetWidth;
+    const contentHeight = pdfContainer.offsetHeight;
+
+    // mm単位に変換（96dpi基準）
+    const pxToMm = 25.4 / 96;
+    const widthMm = contentWidth * pxToMm;
+    const heightMm = contentHeight * pxToMm;
+
+    // html2pdf.jsのオプション
     const pdfOptions = {
-      margin: 5,
+      margin: 0,  // パディングはコンテナに含まれているため余白なし
       filename: 'preview.pdf',
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: {
         scale: 2,
         useCORS: true,
-        logging: true,  // デバッグ用にログを有効化
+        logging: false,
         allowTaint: true,
-        backgroundColor: '#ffffff'
+        backgroundColor: '#ffffff',
+        width: contentWidth,
+        height: contentHeight
       },
       jsPDF: {
         unit: 'mm',
-        format: 'a3',
-        orientation: 'landscape'
+        format: [widthMm, heightMm],  // コンテンツサイズに合わせたカスタムサイズ
+        orientation: widthMm > heightMm ? 'landscape' : 'portrait'
       },
       pagebreak: { mode: 'avoid-all' }
     };
