@@ -128,7 +128,7 @@ async function downloadPdf() {
 
     // html2pdf.jsのオプション（ユーザー指定の設定を使用）
     const pdfOptions = {
-      margin: 10,
+      margin: 5,
       filename: 'preview.pdf',
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: {
