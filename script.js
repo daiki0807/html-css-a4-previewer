@@ -86,14 +86,12 @@ async function downloadPdf() {
     pdfContainer.insertBefore(styleElement, pdfContainer.firstChild);
 
     // 一時的にDOMに追加（html2pdfがレンダリングに必要）
-    // 左に飛ばしすぎるとhtml2canvasが描画できない場合があるため、
-    // 固定配置でz-indexを下げて隠す方式に変更
-    pdfContainer.style.position = 'fixed';
-    pdfContainer.style.left = '0';
+    // html2canvasはopacity: 0やvisibility: hiddenでは描画できないため、
+    // 画面外に配置して見えないようにするが、完全に描画可能な状態を維持
+    pdfContainer.style.position = 'absolute';
+    pdfContainer.style.left = '-9999px';
     pdfContainer.style.top = '0';
-    pdfContainer.style.zIndex = '-9999';
-    // visibility: hiddenだと描画されない可能性があるため、opacity: 0を使用
-    pdfContainer.style.opacity = '0';
+    pdfContainer.style.zIndex = '9999';
     pdfContainer.style.pointerEvents = 'none'; // 操作不可にする
     pdfContainer.style.width = '420mm';  // A3横幅
     pdfContainer.style.minHeight = '297mm';  // A3高さ
