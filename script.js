@@ -73,8 +73,35 @@ async function downloadPdf() {
     const htmlContent = htmlEditor.value;
     const cssContent = cssEditor.value;
 
+    // PDF用のオーバーレイを作成（画面全体を覆う）
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(255, 255, 255, 0.95);
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    `;
+
+    // ローディングメッセージ
+    const loadingMsg = document.createElement('div');
+    loadingMsg.textContent = 'PDF生成中...';
+    loadingMsg.style.cssText = `
+      font-size: 24px;
+      color: #333;
+      margin-bottom: 20px;
+    `;
+    overlay.appendChild(loadingMsg);
+
     // PDF用の一時的なコンテナを作成
     const pdfContainer = document.createElement('div');
+    pdfContainer.id = 'pdf-capture-container';
     pdfContainer.innerHTML = htmlContent;
 
     // スタイルを適用
@@ -85,18 +112,19 @@ async function downloadPdf() {
     `;
     pdfContainer.insertBefore(styleElement, pdfContainer.firstChild);
 
-    // 一時的にDOMに追加（html2pdfがレンダリングに必要）
-    // html2canvasはopacity: 0やvisibility: hiddenでは描画できないため、
-    // 画面外に配置して見えないようにするが、完全に描画可能な状態を維持
-    pdfContainer.style.position = 'absolute';
-    pdfContainer.style.left = '-9999px';
-    pdfContainer.style.top = '0';
-    pdfContainer.style.zIndex = '9999';
-    pdfContainer.style.pointerEvents = 'none'; // 操作不可にする
-    pdfContainer.style.width = '420mm';  // A3横幅
-    pdfContainer.style.minHeight = '297mm';  // A3高さ
-    pdfContainer.style.background = '#fff';
-    document.body.appendChild(pdfContainer);
+    // コンテナのスタイル設定
+    pdfContainer.style.cssText = `
+      width: 420mm;
+      min-height: 297mm;
+      background: #fff;
+      overflow: visible;
+    `;
+
+    overlay.appendChild(pdfContainer);
+    document.body.appendChild(overlay);
+
+    // DOMの描画を待機（html2canvasが正しくキャプチャできるように）
+    await new Promise(resolve => setTimeout(resolve, 100));
 
     // html2pdf.jsのオプション（ユーザー指定の設定を使用）
     const pdfOptions = {
@@ -106,7 +134,9 @@ async function downloadPdf() {
       html2canvas: {
         scale: 2,
         useCORS: true,
-        logging: false
+        logging: true,  // デバッグ用にログを有効化
+        allowTaint: true,
+        backgroundColor: '#ffffff'
       },
       jsPDF: {
         unit: 'mm',
@@ -119,12 +149,17 @@ async function downloadPdf() {
     // PDF生成とダウンロード
     await html2pdf().set(pdfOptions).from(pdfContainer).save();
 
-    // 一時コンテナを削除
-    document.body.removeChild(pdfContainer);
+    // オーバーレイを削除
+    document.body.removeChild(overlay);
 
   } catch (error) {
     console.error('PDF生成エラー:', error);
     alert('PDFの生成中にエラーが発生しました。');
+    // エラー時もオーバーレイを削除
+    const existingOverlay = document.querySelector('div[style*="z-index: 99999"]');
+    if (existingOverlay) {
+      document.body.removeChild(existingOverlay);
+    }
   } finally {
     // ボタンを元に戻す
     downloadPdfBtn.disabled = false;
