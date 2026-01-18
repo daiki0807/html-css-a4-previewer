@@ -112,48 +112,43 @@ async function downloadPdf() {
     `;
     pdfContainer.insertBefore(styleElement, pdfContainer.firstChild);
 
-    // コンテナのスタイル設定（コンテンツサイズに合わせる）
+    // コンテナのスタイル設定（A4縦サイズに固定）
     pdfContainer.style.cssText = `
-      display: inline-block;
+      width: 210mm;
+      min-height: 297mm;
       background: #fff;
-      padding: 10mm;
+      padding: 0;
+      margin: 0 auto;
+      box-sizing: border-box;
+      overflow: hidden;
     `;
 
     overlay.appendChild(pdfContainer);
     document.body.appendChild(overlay);
 
     // DOMの描画を待機（html2canvasが正しくキャプチャできるように）
-    await new Promise(resolve => setTimeout(resolve, 100));
-
-    // コンテンツの実際のサイズを取得
-    const contentWidth = pdfContainer.offsetWidth;
-    const contentHeight = pdfContainer.offsetHeight;
-
-    // mm単位に変換（96dpi基準）
-    const pxToMm = 25.4 / 96;
-    const widthMm = contentWidth * pxToMm;
-    const heightMm = contentHeight * pxToMm;
+    await new Promise(resolve => setTimeout(resolve, 500)); // 待機時間を少し延長
 
     // html2pdf.jsのオプション
     const pdfOptions = {
-      margin: 0,  // パディングはコンテナに含まれているため余白なし
+      margin: 5, // 余白5mm
       filename: 'preview.pdf',
-      image: { type: 'jpeg', quality: 0.98 },
+      image: { type: 'jpeg', quality: 1 },
       html2canvas: {
         scale: 2,
         useCORS: true,
         logging: false,
         allowTaint: true,
         backgroundColor: '#ffffff',
-        width: contentWidth,
-        height: contentHeight
+        // A4幅(210mm)から余白(左右合計10mm)を引いた幅を基準に描画させる
+        windowWidth: document.body.scrollWidth,
       },
       jsPDF: {
         unit: 'mm',
-        format: [widthMm, heightMm],  // コンテンツサイズに合わせたカスタムサイズ
-        orientation: widthMm > heightMm ? 'landscape' : 'portrait'
+        format: 'a4',
+        orientation: 'portrait'
       },
-      pagebreak: { mode: 'avoid-all' }
+      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
     };
 
     // PDF生成とダウンロード
