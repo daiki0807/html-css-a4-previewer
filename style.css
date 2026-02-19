@@ -265,11 +265,10 @@ body {
   overflow: auto;
 }
 
-/* Preview Frame - 16:9 Aspect Ratio */
+/* Preview Frame */
 .preview-frame {
   width: 100%;
-  max-width: 800px;
-  aspect-ratio: 16 / 9;
+  height: 100%;
   background: #fff;
   border-radius: var(--radius-sm);
   box-shadow:
@@ -297,10 +296,6 @@ body {
   .editor-panel {
     flex-direction: row;
   }
-
-  .preview-frame {
-    max-width: 100%;
-  }
 }
 
 @media (max-width: 600px) {
@@ -324,10 +319,6 @@ body {
   .download-btn {
     width: 100%;
     justify-content: center;
-  }
-
-  .preview-frame {
-    max-width: 100%;
   }
 }
 
