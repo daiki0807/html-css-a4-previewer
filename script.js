@@ -11,6 +11,8 @@ const cssEditor = document.getElementById('css-editor');
 const previewIframe = document.getElementById('preview-iframe');
 const downloadPdfBtn = document.getElementById('download-pdf-btn');
 const previewFrame = document.getElementById('preview-frame');
+const resetHtmlBtn = document.getElementById('reset-html-btn');
+const resetCssBtn = document.getElementById('reset-css-btn');
 
 // =============================================
 // Debounce Utility
@@ -237,6 +239,23 @@ async function downloadPdf() {
 htmlEditor.addEventListener('input', debouncedUpdatePreview);
 cssEditor.addEventListener('input', debouncedUpdatePreview);
 downloadPdfBtn.addEventListener('click', downloadPdf);
+
+// Reset Buttons Action
+if (resetHtmlBtn) {
+  resetHtmlBtn.addEventListener('click', () => {
+    htmlEditor.value = '';
+    updatePreview();
+    htmlEditor.focus();
+  });
+}
+
+if (resetCssBtn) {
+  resetCssBtn.addEventListener('click', () => {
+    cssEditor.value = '';
+    updatePreview();
+    cssEditor.focus();
+  });
+}
 
 // =============================================
 // Tab Key Support in Editors
